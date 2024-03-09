@@ -4,17 +4,33 @@
 
 <p *ngIf="!stations"><em>Loading... Please refresh once the ASP.NET backend has started. See <a href="https://aka.ms/jspsintegrationangular">https://aka.ms/jspsintegrationangular</a> for more details.</em></p>
 
-<table *ngIf="stations">
+<p *ngIf="stations">
+  <mat-form-field>
+    <mat-label>Station From</mat-label>
+    <mat-select [(value)]="stationFrom">
+      <mat-option *ngFor="let s of stations" [value]="s.ocpId">{{s.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Station To</mat-label>
+    <mat-select [(value)]="stationTo">
+      <mat-option *ngFor="let s of stations" [value]="s.ocpId">{{s.name}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="search()">Primary</button>
+</p>
+
+<table *ngIf="stations && path">
     <thead>
         <tr>
-            <th>Id</th>
             <th>Name</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let s of stations">
-            <td>{{ s.id }}</td>
-            <td>{{ s.name }}</td>
+        <tr *ngFor="let x of path">
+            <td>{{ x }}</td>
         </tr>
     </tbody>
 </table>

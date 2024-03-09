@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetworkPointWalker.Tests", "NetworkPointWalker.Tests\NetworkPointWalker.Tests.csproj", "{2B185A22-38C8-42D4-BE9B-71A1690CDDBA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{FB14E88E-5647-4079-B803-D6D6225D6CB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB14E88E-5647-4079-B803-D6D6225D6CB7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB14E88E-5647-4079-B803-D6D6225D6CB7}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{2B185A22-38C8-42D4-BE9B-71A1690CDDBA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B185A22-38C8-42D4-BE9B-71A1690CDDBA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B185A22-38C8-42D4-BE9B-71A1690CDDBA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B185A22-38C8-42D4-BE9B-71A1690CDDBA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

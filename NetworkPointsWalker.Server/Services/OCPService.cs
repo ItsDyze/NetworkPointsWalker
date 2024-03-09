@@ -16,7 +16,7 @@ namespace NetworkPointsWalker.Server.Services
             foreach (var ocp in OCPs)
             {
                 var ocpCoord = new Coordinates(ocp.GPS);
-                result.Add(ocp.Id, targetCoordinates.DistanceTo(ocpCoord, UnitOfLength.Kilometers));
+                result.Add(ocp.Id, ocpCoord != targetCoordinates ? targetCoordinates.DistanceTo(ocpCoord, UnitOfLength.Kilometers) : 0);
             }
 
             return result;
@@ -31,7 +31,7 @@ namespace NetworkPointsWalker.Server.Services
                 var ocpFromCoord = new Coordinates(track.OCPFrom.GPS);
                 var ocpToCoord = new Coordinates(track.OCPTo.GPS);
 
-                result.Add(track.Id, ocpFromCoord.DistanceTo(ocpToCoord, UnitOfLength.Kilometers));
+                result.Add(track.Id, ocpFromCoord != ocpToCoord ? ocpFromCoord.DistanceTo(ocpToCoord, UnitOfLength.Kilometers) : 0);
             }
 
             return result;

@@ -22,6 +22,9 @@ builder.Services.AddDbContext<AppDbContext>(
 
 
 builder.Services.AddScoped<IDataService, DataService>();
+builder.Services.AddScoped<ICrawlerService, CrawlerService>();
+builder.Services.AddScoped<IOCPService, OCPService>();
+builder.Services.AddScoped<ITrackService, TrackService>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
