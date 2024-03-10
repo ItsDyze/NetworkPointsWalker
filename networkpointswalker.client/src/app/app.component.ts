@@ -30,6 +30,8 @@ export class AppComponent implements OnInit {
     this.http.get<Station[]>(this.host+"/Graph/GetStations").subscribe(
       (result) => {
         this.stations = result;
+        this.stationFrom = result.filter(x => x.name == "Luxembourg")[0].id;
+        this.stationTo = result.filter(x => x.name == "Leudelange")[0].id;
       },
       (error) => {
         console.error(error);

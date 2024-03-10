@@ -27,6 +27,11 @@
         {
             var baseRad = Math.PI * baseCoordinates.Latitude / 180;
             var targetRad = Math.PI * targetCoordinates.Latitude / 180;
+            if(baseRad == targetRad)
+            {
+                return 0;
+            }
+
             var theta = baseCoordinates.Longitude - targetCoordinates.Longitude;
             var thetaRad = Math.PI * theta / 180;
 

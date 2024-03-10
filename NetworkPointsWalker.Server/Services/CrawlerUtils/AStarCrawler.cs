@@ -19,7 +19,7 @@ namespace NetworkPointsWalker.Server.Services.CrawlerUtils
 
         ConcurrentBag<AStarCrawler> AwaitingCrawlers;
 
-        public AStarCrawler(Vertex startVertex, Vertex endVertex, List<Vertex> vertices, List<Guid> exploredVertices, List<Edge> edges, List<Vertex> path, ConcurrentBag<AStarCrawler> awaitingCrawlers)
+        public AStarCrawler(Vertex startVertex, Vertex endVertex, List<Vertex> vertices, List<Guid> exploredVertices, List<Edge> edges, List<Vertex> path, ConcurrentBag<AStarCrawler> awaitingCrawlers, double heuristicValue)
         {
             StartVertex = startVertex;
             EndVertex = endVertex;
@@ -28,7 +28,7 @@ namespace NetworkPointsWalker.Server.Services.CrawlerUtils
             Edges = edges;
             Path = path;
             AwaitingCrawlers = awaitingCrawlers;
-            HeuristicValue = startVertex.HeuristicValue;
+            HeuristicValue = heuristicValue;
         }
 
         public List<Vertex> GetPath()
@@ -54,7 +54,7 @@ namespace NetworkPointsWalker.Server.Services.CrawlerUtils
             foreach (var edge in orderedEdges)
             {
                 var theOtherVertex = Vertices.Single(x => x.Id == edge.TheOtherVertex(StartVertex.Id));
-                AwaitingCrawlers.Add(new AStarCrawler(theOtherVertex, EndVertex, Vertices, ExploredVertices, Edges, Path, AwaitingCrawlers));
+                AwaitingCrawlers.Add(new AStarCrawler(theOtherVertex, EndVertex, Vertices, ExploredVertices, Edges, new List<Vertex>(Path), AwaitingCrawlers, HeuristicValue + theOtherVertex.HeuristicValue));
             }
 
             return false;

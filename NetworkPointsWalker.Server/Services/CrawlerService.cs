@@ -40,7 +40,7 @@ namespace NetworkPointsWalker.Server.Services
             var endVertex = vertices.Single(x => x.Id == EndId);
             var awaitingCrawlers = new ConcurrentBag<AStarCrawler>();
 
-            AStarCrawler firstCrawler = new AStarCrawler(startVertex, endVertex, vertices, new List<Guid>(), edges, new List<Vertex>(), awaitingCrawlers);
+            AStarCrawler firstCrawler = new AStarCrawler(startVertex, endVertex, vertices, new List<Guid>(), edges, new List<Vertex>(), awaitingCrawlers, 0 + startVertex.HeuristicValue);
 
             firstCrawler.Run();
 
