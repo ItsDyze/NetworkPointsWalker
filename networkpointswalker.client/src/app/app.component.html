@@ -22,15 +22,15 @@
   <button mat-raised-button color="primary" (click)="search()">Primary</button>
 </p>
 
-<table *ngIf="stations && path">
+<table *ngIf="path">
     <thead>
         <tr>
             <th>Name</th>
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let x of path">
-            <td>{{ x }}</td>
+        <tr *ngFor="let x of path.ocPs">
+            <td>{{ x.name }}</td>
         </tr>
     </tbody>
 </table>

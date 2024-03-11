@@ -1,8 +1,10 @@
-﻿using NetworkPointsWalker.Server.Entities;
+﻿using AutoMapper;
+using NetworkPointsWalker.Server.Entities;
 using NetworkPointsWalker.Server.Extensions;
 using NetworkPointsWalker.Server.Models;
 using NetworkPointsWalker.Server.Services.CrawlerUtils;
 using NetworkPointsWalker.Server.Services.Interfaces;
+using NetworkPointsWalker.Server.ViewModel;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 
@@ -12,21 +14,24 @@ namespace NetworkPointsWalker.Server.Services
     {
         private readonly IDataService _data;
         private readonly IOCPService _ocpService;
+        private readonly IMapper _mapper;
 
         private List<OCP> OCPs;
         private List<Track> Tracks;
 
         public CrawlerService(IDataService data,
-                            IOCPService ocpService) {  
+                            IOCPService ocpService,
+                            IMapper mapper) {  
             _data = data;
             _ocpService = ocpService;
+            _mapper = mapper;
 
             OCPs = data.GetOCPs().ToList();
             Tracks = data.GetTracks().ToList();
         }
 
         // Directed BFS
-        public List<OCP> GetShortestPath(Guid StartId, Guid EndId)
+        public CrawledPathViewModel GetShortestPath(Guid StartId, Guid EndId)
         {
             var destination = OCPs.First(x => x.Id == EndId);
 
@@ -40,7 +45,7 @@ namespace NetworkPointsWalker.Server.Services
             var endVertex = vertices.Single(x => x.Id == EndId);
             var awaitingCrawlers = new ConcurrentBag<AStarCrawler>();
 
-            AStarCrawler firstCrawler = new AStarCrawler(startVertex, endVertex, vertices, new List<Guid>(), edges, new List<Vertex>(), awaitingCrawlers, 0 + startVertex.HeuristicValue);
+            AStarCrawler firstCrawler = new AStarCrawler(startVertex, endVertex, vertices, new List<Guid>(), edges, new CrawledPath(), awaitingCrawlers, 0 + startVertex.HeuristicValue, 0);
 
             firstCrawler.Run();
 
@@ -53,11 +58,13 @@ namespace NetworkPointsWalker.Server.Services
                 foundPath = crawlerToProcess.Run();
                 if(foundPath)
                 {
-                    return crawlerToProcess.GetPath().Select(x => OCPs.Single(y => y.Id == x.Id)).ToList();
+                    var crawledPath = crawlerToProcess.GetPath();
+                    var result = new CrawledPathViewModel(_mapper.Map<IEnumerable<OCPViewModel>>( crawledPath.Vertices.Select(x => OCPs.Single(y => y.Id == x.Id))).ToList(), crawledPath.Distance);
+                    return result;
                 }
             }
 
-            return new List<OCP>();
+            return null;
         }
 
         private void DjikstraCrawler()

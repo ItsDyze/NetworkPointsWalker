@@ -32,11 +32,11 @@ namespace NetworkPointsWalker.Server.Controllers
         }
 
         [HttpGet("GetShortestPath")]
-        public IEnumerable<string> GetShortestPath(Guid from, Guid to)
+        public CrawledPathViewModel GetShortestPath(Guid from, Guid to)
         {
             var result = _walkerService.GetShortestPath(from, to);
 
-            return result.Select(x => x.Name);
+            return result;
         }
     }
 }

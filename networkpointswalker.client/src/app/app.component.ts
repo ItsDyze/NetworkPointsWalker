@@ -7,6 +7,22 @@ interface Station {
   ocpId: string;
 }
 
+interface OCP {
+  id: string;
+  name: string;
+  coordinates: Coordinates;
+}
+
+interface Coordinates {
+  latitude: number;
+  longitude: number;
+}
+
+interface CrawledPath {
+  ocPs: OCP[];
+  distance: number;
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -14,7 +30,7 @@ interface Station {
 })
 export class AppComponent implements OnInit {
   public stations: Station[] = [];
-  public path: string[] = [];
+  public path: CrawledPath|null = null;
 
   public stationFrom: string = "Luxembourg";
   public stationTo: string = "Leudelange";
@@ -30,8 +46,8 @@ export class AppComponent implements OnInit {
     this.http.get<Station[]>(this.host+"/Graph/GetStations").subscribe(
       (result) => {
         this.stations = result;
-        this.stationFrom = result.filter(x => x.name == "Luxembourg")[0].id;
-        this.stationTo = result.filter(x => x.name == "Leudelange")[0].id;
+        this.stationFrom = result.filter(x => x.name == "Luxembourg")[0].ocpId;
+        this.stationTo = result.filter(x => x.name == "Leudelange")[0].ocpId;
       },
       (error) => {
         console.error(error);
@@ -47,9 +63,10 @@ export class AppComponent implements OnInit {
   }
 
   getShortestPath(a:string, b:string) {
-    this.http.get<string[]>(this.host + "/Graph/GetShortestPath?from="+a+"&to="+b).subscribe(
+    this.http.get<CrawledPath>(this.host + "/Graph/GetShortestPath?from="+a+"&to="+b).subscribe(
       (result) => {
         this.path = result;
+        console.log(result);
       },
       (error) => {
         console.error(error);

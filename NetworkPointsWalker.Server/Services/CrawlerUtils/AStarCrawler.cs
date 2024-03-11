@@ -11,35 +11,36 @@ namespace NetworkPointsWalker.Server.Services.CrawlerUtils
         List<Vertex> Vertices;
         List<Guid> ExploredVertices;
         List<Edge> Edges;
-        List<Vertex> Path;
-        
+        CrawledPath CurrentPath;
 
+        public double Distance = 0;
         public double HeuristicValue = 0;
         public bool Done = false;
 
         ConcurrentBag<AStarCrawler> AwaitingCrawlers;
 
-        public AStarCrawler(Vertex startVertex, Vertex endVertex, List<Vertex> vertices, List<Guid> exploredVertices, List<Edge> edges, List<Vertex> path, ConcurrentBag<AStarCrawler> awaitingCrawlers, double heuristicValue)
+        public AStarCrawler(Vertex startVertex, Vertex endVertex, List<Vertex> vertices, List<Guid> exploredVertices, List<Edge> edges, CrawledPath currentPath, ConcurrentBag<AStarCrawler> awaitingCrawlers, double heuristicValue, double distance)
         {
             StartVertex = startVertex;
             EndVertex = endVertex;
             Vertices = vertices;
             ExploredVertices = exploredVertices;
             Edges = edges;
-            Path = path;
+            CurrentPath = currentPath;
             AwaitingCrawlers = awaitingCrawlers;
             HeuristicValue = heuristicValue;
+            Distance = distance;
         }
 
-        public List<Vertex> GetPath()
+        public CrawledPath GetPath()
         {
-            return Path;
+            return CurrentPath;
         }
 
         public bool Run()
         {
             Done = true;
-            Path.Add(StartVertex); 
+            CurrentPath.Vertices.Add(StartVertex); 
             ExploredVertices.Add(StartVertex.Id);
 
             if (StartVertex == EndVertex)
@@ -48,21 +49,18 @@ namespace NetworkPointsWalker.Server.Services.CrawlerUtils
             }
 
             var orderedEdges = Edges.Where(x => (x.VertexA == StartVertex.Id || x.VertexB == StartVertex.Id) && !ExploredVertices.Contains(x.TheOtherVertex(StartVertex.Id)))
-                                        .AddAstarHeuristics(Vertices, StartVertex.Id)
                                         .OrderBy(x => x.HeuristicValue);
 
             foreach (var edge in orderedEdges)
             {
+                var newPath = new CrawledPath(CurrentPath);
+                newPath.Edges.Add(edge);
+                newPath.Distance += edge.HeuristicValue;
                 var theOtherVertex = Vertices.Single(x => x.Id == edge.TheOtherVertex(StartVertex.Id));
-                AwaitingCrawlers.Add(new AStarCrawler(theOtherVertex, EndVertex, Vertices, ExploredVertices, Edges, new List<Vertex>(Path), AwaitingCrawlers, HeuristicValue + theOtherVertex.HeuristicValue));
+                AwaitingCrawlers.Add(new AStarCrawler(theOtherVertex, EndVertex, Vertices, ExploredVertices, Edges, newPath, AwaitingCrawlers, HeuristicValue + theOtherVertex.HeuristicValue, Distance + edge.HeuristicValue));
             }
 
             return false;
-        }
-
-        public override string ToString()
-        {
-            return StartVertex.Name + "("+ String.Join('>', Path.Select(x => Vertices.Single(y => y.Id == x.Id).Name)) +")";
         }
     }
 }
