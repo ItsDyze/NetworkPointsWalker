@@ -14,11 +14,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+import { MapComponent } from './components/map/map.component';
+import { StationService } from './services/station.service';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MapComponent,
+    
   ],
   imports: [
     BrowserModule, HttpClientModule,
@@ -32,7 +36,8 @@ import { MatButtonModule } from '@angular/material/button';
     MatButtonModule,
   ],
   providers: [
-    provideAnimationsAsync()
+    provideAnimationsAsync(),
+    StationService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

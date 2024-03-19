@@ -1,27 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Station } from './models/station';
+import { CrawledPath } from './models/crawled-path';
 
-interface Station {
-  id: string;
-  name: string;
-  ocpId: string;
-}
 
-interface OCP {
-  id: string;
-  name: string;
-  coordinates: Coordinates;
-}
 
-interface Coordinates {
-  latitude: number;
-  longitude: number;
-}
 
-interface CrawledPath {
-  ocPs: OCP[];
-  distance: number;
-}
+
+
 
 @Component({
   selector: 'app-root',

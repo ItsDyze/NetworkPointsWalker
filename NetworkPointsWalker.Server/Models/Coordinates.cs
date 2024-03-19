@@ -7,7 +7,7 @@
 
         public Coordinates(string coords)
         {
-            var elements = coords.Split(' ');
+            var elements = coords.Split(", ").Select(x => x.Replace(',', '.')).ToArray();
 
             Latitude = double.Parse(elements[0]);
             Longitude = double.Parse(elements[1]);

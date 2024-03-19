@@ -1,0 +1,9 @@
+<canvas *ngIf="stations"
+        id="map"
+        [height]="height"
+        [width]="width"
+        
+        style="border: 1px solid black;">
+
+</canvas>
+<button (click)="buildMap()">reload</button>

@@ -17,7 +17,7 @@ builder.Services.AddCors(options =>
         );
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseInMemoryDatabase("NetworkPointWalker"), ServiceLifetime.Singleton
+    options => options.UseInMemoryDatabase("NetworkPointWalker")
 );
 
 

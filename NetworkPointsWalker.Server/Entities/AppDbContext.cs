@@ -39,7 +39,7 @@ namespace NetworkPointsWalker.Server.Entities
         private Dictionary<Type, object[]> SeedData()
         {
             OCP[] OCPs = [
-                new OCP() { Id = Guid.NewGuid(), GPS = "5,952, 49,498", Name = "Réseau tertiaire-Site Belval" },
+                new OCP() { Id = Guid.NewGuid(), GPS = "49,498, 5,952", Name = "Réseau tertiaire-Site Belval" }, //Fixed wrong data...
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,515, 5,9259", Name = "Belvaux-Soleuvre" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,5161, 6,1011", Name = "Bettembourg-Voyageurs" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,5224, 5,8916", Name = "Differdange(gare)" },

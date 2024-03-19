@@ -1,4 +1,5 @@
-﻿using NetworkPointsWalker.Server.Entities;
+﻿using Microsoft.EntityFrameworkCore;
+using NetworkPointsWalker.Server.Entities;
 using NetworkPointsWalker.Server.Services.Interfaces;
 
 namespace NetworkPointsWalker.Server.Services
@@ -19,7 +20,8 @@ namespace NetworkPointsWalker.Server.Services
 
         public IEnumerable<Station> GetStations()
         {
-            return _db.Stations;
+            return _db.Stations
+                        .Include(x => x.OCP);
         }
 
         public IEnumerable<Track> GetTracks()
