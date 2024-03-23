@@ -1,29 +1,29 @@
 ﻿namespace NetworkPointsWalker.Server.Models
 {
-    public class Coordinates
+    public class CoordinatesModel
     {
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
-        public Coordinates(string coords)
+        public CoordinatesModel(string coords)
         {
             var elements = coords.Split(", ").Select(x => x.Replace(',', '.')).ToArray();
 
             Latitude = double.Parse(elements[0]);
             Longitude = double.Parse(elements[1]);
         }
-        public Coordinates(double lat, double lng) { Latitude = lat; Longitude = lng; }
+        public CoordinatesModel(double lat, double lng) { Latitude = lat; Longitude = lng; }
     }
 
     // https://stackoverflow.com/questions/6366408/calculating-distance-between-two-latitude-and-longitude-geocoordinates
     public static class CoordinatesDistanceExtensions
     {
-        public static double DistanceTo(this Coordinates baseCoordinates, Coordinates targetCoordinates)
+        public static double DistanceTo(this CoordinatesModel baseCoordinates, CoordinatesModel targetCoordinates)
         {
             return DistanceTo(baseCoordinates, targetCoordinates, UnitOfLength.Kilometers);
         }
 
-        public static double DistanceTo(this Coordinates baseCoordinates, Coordinates targetCoordinates, UnitOfLength unitOfLength)
+        public static double DistanceTo(this CoordinatesModel baseCoordinates, CoordinatesModel targetCoordinates, UnitOfLength unitOfLength)
         {
             var baseRad = Math.PI * baseCoordinates.Latitude / 180;
             var targetRad = Math.PI * targetCoordinates.Latitude / 180;

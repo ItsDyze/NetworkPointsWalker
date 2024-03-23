@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NetworkPointsWalker.Server.DTO;
 using NetworkPointsWalker.Server.Services.Interfaces;
-using NetworkPointsWalker.Server.ViewModel;
 namespace NetworkPointsWalker.Server.Controllers
 {
     [ApiController]
@@ -22,9 +22,9 @@ namespace NetworkPointsWalker.Server.Controllers
         }
 
         [HttpGet("GetStations")]
-        public IEnumerable<StationViewModel> GetStations()
+        public IEnumerable<StationDTO> GetStations()
         {
-            return _mapper.Map<IEnumerable<StationViewModel>>(_dataService.GetStations().OrderBy(x => x.Name));
+            return _mapper.Map<IEnumerable<StationDTO>>(_dataService.GetStations().OrderBy(x => x.Name));
         }
     }
 }

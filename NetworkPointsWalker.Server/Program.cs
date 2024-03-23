@@ -1,10 +1,12 @@
+using AStarCrawler.Interfaces;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NetworkPointsWalker.Server.DTO;
 using NetworkPointsWalker.Server.Entities;
+using NetworkPointsWalker.Server.Models;
 using NetworkPointsWalker.Server.Services;
 using NetworkPointsWalker.Server.Services.Interfaces;
-using NetworkPointsWalker.Server.ViewModel;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,13 +24,15 @@ builder.Services.AddDbContext<AppDbContext>(
 
 
 builder.Services.AddScoped<IDataService, DataService>();
-builder.Services.AddScoped<ICrawlerService, CrawlerService>();
+builder.Services.AddScoped<IGraphService, GraphService>();
 builder.Services.AddScoped<IOCPService, OCPService>();
 builder.Services.AddScoped<ITrackService, TrackService>();
+builder.Services.AddScoped<IAStarCrawler, AStarCrawler.AStarCrawler>();
 
 builder.Services.AddAutoMapper(cfg =>
 {
-    cfg.AddProfile<ViewModelProfile>();
+    cfg.AddProfile<DTOProfile>();
+    cfg.AddProfile<ModelProfile>();
 });
 
 

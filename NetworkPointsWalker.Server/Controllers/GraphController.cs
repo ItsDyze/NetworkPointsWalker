@@ -1,8 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using NetworkPointsWalker.Server.DTO;
 using NetworkPointsWalker.Server.Services.Interfaces;
-using NetworkPointsWalker.Server.ViewModel;
-
 namespace NetworkPointsWalker.Server.Controllers
 {
     [ApiController]
@@ -11,13 +10,13 @@ namespace NetworkPointsWalker.Server.Controllers
     {
         private readonly ILogger<GraphController> _logger;
         private readonly IDataService _dataService;
-        private readonly ICrawlerService _walkerService;
+        private readonly IGraphService _walkerService;
         private readonly IMapper _mapper;
 
         public GraphController(ILogger<GraphController> logger,
                                 IMapper mapper,
                                 IDataService dataService,
-                                ICrawlerService walkerService)
+                                IGraphService walkerService)
         {
             _logger = logger;
             _dataService = dataService;
@@ -26,13 +25,13 @@ namespace NetworkPointsWalker.Server.Controllers
         }
 
         [HttpGet("GetStations")]
-        public IEnumerable<StationViewModel> GetStations()
+        public IEnumerable<StationDTO> GetStations()
         {
-            return _mapper.Map<IEnumerable<StationViewModel>>(_dataService.GetStations().OrderBy(x => x.Name));
+            return _mapper.Map<IEnumerable<StationDTO>>(_dataService.GetStations().OrderBy(x => x.Name));
         }
 
         [HttpGet("GetShortestPath")]
-        public CrawledPathViewModel GetShortestPath(Guid from, Guid to)
+        public CrawledPathDTO GetShortestPath(Guid from, Guid to)
         {
             var result = _walkerService.GetShortestPath(from, to);
 

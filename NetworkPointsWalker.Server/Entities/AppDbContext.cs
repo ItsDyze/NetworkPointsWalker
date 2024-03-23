@@ -110,7 +110,7 @@ namespace NetworkPointsWalker.Server.Entities
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,5301, 6,118", Name = "Livange" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,5533, 5,8608", Name = "Lamadelaine" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,6383, 5,9822", Name = "Capellen" },
-                new OCP() { Id = Guid.NewGuid(), GPS = "5,832, 49,551", Name = "Réseau tertiaire-Rodange" },
+                new OCP() { Id = Guid.NewGuid(), GPS = "49,551, 5,832", Name = "Réseau tertiaire-Rodange" }, //Fixed data..
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,619, 6,133", Name = "Pfaffenthal-Kirchberg" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,8966, 6,0919", Name = "Michelau" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,5655, 6,1455", Name = "Fentange" },
@@ -122,7 +122,7 @@ namespace NetworkPointsWalker.Server.Entities
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,8078, 6,0926", Name = "Colmar-Usines" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,4656, 6,0101", Name = "Langengrund" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,6255, 6,02", Name = "Mamer" },
-                new OCP() { Id = Guid.NewGuid(), GPS = "5,8963, 49,5347", Name = "Réseau tertiaire-Site Differdange" },
+                new OCP() { Id = Guid.NewGuid(), GPS = "49,5347, 5,8963", Name = "Réseau tertiaire-Site Differdange" }, // Fixed data...
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,4857, 6,0352", Name = "Kayl" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,9566, 5,9816", Name = "Merkholtz" },
                 new OCP() { Id = Guid.NewGuid(), GPS = "49,5224, 5,89157", Name = "Differdange(PA)" },

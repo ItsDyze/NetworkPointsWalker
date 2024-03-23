@@ -1,10 +1,10 @@
-﻿namespace NetworkPointsWalker.Server.ViewModel
+﻿namespace NetworkPointsWalker.Server.Models
 {
-    public class StationViewModel
+    public class StationModel
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
         public Guid OCPId { get; set; }
-        public OCPViewModel OCP { get; set; }
+        public OCPModel OCP { get; set; }
     }
 }

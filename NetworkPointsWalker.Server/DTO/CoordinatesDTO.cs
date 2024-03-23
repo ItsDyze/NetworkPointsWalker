@@ -1,8 +1,7 @@
-﻿namespace NetworkPointsWalker.Server.ViewModel
+﻿namespace NetworkPointsWalker.Server.DTO
 {
-    public class CoordinatesViewModel
+    public class CoordinatesDTO
     {
-
         public double Latitude { get; set; }
         public double Longitude { get; set; }
     }

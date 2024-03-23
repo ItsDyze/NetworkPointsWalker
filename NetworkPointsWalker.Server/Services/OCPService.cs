@@ -10,12 +10,12 @@ namespace NetworkPointsWalker.Server.Services
 
         public Dictionary<Guid, double> GetOCPHeuristics(OCP targetOCP, IEnumerable<OCP> OCPs)
         {
-            var targetCoordinates = new Coordinates(targetOCP.GPS);
+            var targetCoordinates = new CoordinatesModel(targetOCP.GPS);
             var result = new Dictionary<Guid, double>();
 
             foreach (var ocp in OCPs)
             {
-                var ocpCoord = new Coordinates(ocp.GPS);
+                var ocpCoord = new CoordinatesModel(ocp.GPS);
                 result.Add(ocp.Id, ocpCoord != targetCoordinates ? targetCoordinates.DistanceTo(ocpCoord, UnitOfLength.Kilometers) : 0);
             }
 
@@ -28,8 +28,8 @@ namespace NetworkPointsWalker.Server.Services
 
             foreach (var track in Tracks)
             {
-                var ocpFromCoord = new Coordinates(track.OCPFrom.GPS);
-                var ocpToCoord = new Coordinates(track.OCPTo.GPS);
+                var ocpFromCoord = new CoordinatesModel(track.OCPFrom.GPS);
+                var ocpToCoord = new CoordinatesModel(track.OCPTo.GPS);
 
                 result.Add(track.Id, ocpFromCoord != ocpToCoord ? ocpFromCoord.DistanceTo(ocpToCoord, UnitOfLength.Kilometers) : 0);
             }
