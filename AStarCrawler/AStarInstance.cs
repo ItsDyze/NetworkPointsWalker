@@ -63,7 +63,7 @@ namespace AStarCrawler
                 newPath.Edges.Add(edge);
 
                 var theOtherVertex = _vertices.Single(vertex => vertex.Id == edge.GetOtherVertexId(_startVertex.Id));
-                newInstances.Append(new AStarInstance(theOtherVertex, _endVertex, _vertices, _edges, _exploredVertices, newPath));
+                newInstances = newInstances.Append(new AStarInstance(theOtherVertex, _endVertex, _vertices, _edges, _exploredVertices, newPath));
             }
 
             _exploredVertices.Add(_startVertex.Id);

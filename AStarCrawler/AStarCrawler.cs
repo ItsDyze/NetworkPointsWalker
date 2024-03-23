@@ -31,7 +31,10 @@ namespace AStarCrawler
                 }
                 else
                 {
-                    awaitingInstances.Concat(newInstances);
+                    foreach (var instance in newInstances)
+                    {
+                        awaitingInstances.Add(instance);
+                    }
                 }
             }
 
