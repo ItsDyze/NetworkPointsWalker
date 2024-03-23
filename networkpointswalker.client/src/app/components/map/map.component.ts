@@ -71,8 +71,14 @@ export class MapComponent {
       if (this.crawledPath) {
         let previousStation: Station | null = null;
         this.crawledPath.ocPs.forEach(o => {
-          let currentStation = this.stations.filter(s => s.ocpId == o.id)[0];
-          if (previousStation && context) {
+
+          let matchingStation = this.stations.filter(s => s.ocpId == o.id);
+          let currentStation = null;
+          if (matchingStation.length > 0) {
+            currentStation = matchingStation[0];
+          }
+
+          if (currentStation && previousStation && context) {
             context.strokeStyle = "red";
             context.lineWidth = 3;
             context.beginPath();
@@ -81,8 +87,11 @@ export class MapComponent {
             context.lineTo(this.getRealValueFromNormalizedValue(previousStation.normalizedCoords.longitude, this._width),
               this.getRealValueFromNormalizedValue(previousStation.normalizedCoords.latitude, this._height, true));
             context.stroke();
+
           }
-          previousStation = currentStation;
+
+
+          previousStation = currentStation ? currentStation : previousStation;
 
         })
       }
