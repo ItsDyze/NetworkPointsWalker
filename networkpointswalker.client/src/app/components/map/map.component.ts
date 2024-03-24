@@ -26,6 +26,7 @@ export class MapComponent implements AfterViewInit {
     private segments: Segment[] = [];
     private context: CanvasRenderingContext2D | null = null;
     private service: MapService;
+    private isUpdated: boolean = true;
     
     constructor(private ocpService: OcpService,
                 private mapService: MapService)
@@ -60,11 +61,6 @@ export class MapComponent implements AfterViewInit {
         });
     }
     
-    public SetContext(canvas: HTMLCanvasElement){
-        let retrievedCanvas = canvas.getContext("2d");
-        
-    }
-    
     public AddLocation(x: MapLocation) {
         this.locations.push(x);
         this.Draw();
@@ -78,6 +74,7 @@ export class MapComponent implements AfterViewInit {
     public AddPath(path: CrawledPath)
     {
         let previousLocation: MapLocation|null = null;
+        this.segments = [];
         path.ocPs.forEach(o => {
             if(!previousLocation){
                 previousLocation = new MapLocation(o.name, o.preparedCoords);
@@ -90,11 +87,6 @@ export class MapComponent implements AfterViewInit {
             }
         });
     }
-
-    public ClearData() {
-        this.locations = [];
-        this.segments = [];
-    }
     
     public StartDrawing() {
         if(!this.context){
@@ -102,7 +94,12 @@ export class MapComponent implements AfterViewInit {
         }
 
         setTimeout(() => {
-            this.Draw();
+            if(this.isUpdated)
+            {
+                this.Clear();
+                this.Draw();
+                this.isUpdated = false;
+            }
         }, 1000);
     }
     
