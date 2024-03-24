@@ -4,11 +4,8 @@ namespace NetworkPointsWalker.Server.DTO
 {
     public class CrawledPathDTO
     {
-        public List<OCPDTO> OCPs { get; set; }
+        public IList<OCPDTO> OCPs { get; set; }
 
-        public CrawledPathDTO(List<OCPDTO> oCPs)
-        {
-            OCPs = oCPs;
-        }
+        public bool IsValid { get; set; }
     }
 }

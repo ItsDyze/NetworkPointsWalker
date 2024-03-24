@@ -9,31 +9,31 @@ namespace NetworkPointsWalker.Server.Controllers
     public class GraphController : ControllerBase
     {
         private readonly ILogger<GraphController> _logger;
-        private readonly IDataService _dataService;
-        private readonly IGraphService _walkerService;
+        private readonly IGraphService _graphService;
         private readonly IMapper _mapper;
 
         public GraphController(ILogger<GraphController> logger,
                                 IMapper mapper,
                                 IDataService dataService,
-                                IGraphService walkerService)
+                                IGraphService graphService)
         {
             _logger = logger;
-            _dataService = dataService;
-            _walkerService = walkerService;
+            _graphService = graphService;
             _mapper = mapper;
-        }
-
-        [HttpGet("GetStations")]
-        public IEnumerable<StationDTO> GetStations()
-        {
-            return _mapper.Map<IEnumerable<StationDTO>>(_dataService.GetStations().OrderBy(x => x.Name));
         }
 
         [HttpGet("GetShortestPath")]
         public CrawledPathDTO GetShortestPath(Guid from, Guid to)
         {
-            var result = _walkerService.GetShortestPath(from, to);
+            var result = _graphService.GetShortestPath(from, to);
+
+            return result;
+        }
+
+        [HttpGet("GetShortestPathWithCandidates")]
+        public IEnumerable<CrawledPathDTO> GetShortestPathWithCandidates(Guid from, Guid to)
+        {
+            var result = _graphService.GetShortestPathWithCandidates(from, to);
 
             return result;
         }

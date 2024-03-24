@@ -41,7 +41,39 @@ namespace NetworkPointsWalker.Server.Services
             HashSet<IEdge> edges = _mapper.Map<HashSet<IEdge>>(Tracks);
 
             var crawledPath = _crawler.GetShortestPath(startId, endId, edges, vertices);
-            return crawledPath == null ? null : new CrawledPathDTO(_mapper.Map<IEnumerable<OCPDTO>>(crawledPath.Vertices.Select(x => OCPs.Single(y => y.Id == x.Id))).ToList());
+            if(crawledPath != null)
+            {
+                return new CrawledPathDTO()
+                {
+                    OCPs = _mapper.Map<IEnumerable<OCPDTO>>(crawledPath.Vertices.Select(x => OCPs.Single(y => y.Id == x.Id))).ToList(),
+                    IsValid = crawledPath.IsValidSolution
+                };
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+
+        public IEnumerable<CrawledPathDTO> GetShortestPathWithCandidates(Guid startId, Guid endId)
+        {
+            var awaitingInstances = new ConcurrentBag<IAStarInstance>();
+            var destination = OCPs.First(x => x.Id == endId);
+
+            HashSet<IVertex> vertices = PrepareVertices(destination);
+            HashSet<IEdge> edges = _mapper.Map<HashSet<IEdge>>(Tracks);
+
+            var crawledPaths = _crawler.GetShortestPathAndCandidates(startId, endId, edges, vertices);
+            return crawledPaths.Select(p =>
+            {
+                var path = new CrawledPathDTO()
+                {
+                    OCPs = _mapper.Map<IEnumerable<OCPDTO>>(p.Vertices.Select(x => OCPs.Single(y => y.Id == x.Id))).ToList(),
+                    IsValid = p.IsValidSolution
+                };
+                return path;
+            });
         }
 
         private HashSet<IVertex> PrepareVertices(OCP destination)

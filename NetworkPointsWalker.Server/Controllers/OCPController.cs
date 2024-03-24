@@ -6,13 +6,13 @@ namespace NetworkPointsWalker.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class StationController : ControllerBase
+    public class OCPController : ControllerBase
     {
-        private readonly ILogger<GraphController> _logger;
+        private readonly ILogger<OCPController> _logger;
         private readonly IDataService _dataService;
         private readonly IMapper _mapper;
 
-        public StationController(ILogger<GraphController> logger,
+        public OCPController(ILogger<OCPController> logger,
                                 IMapper mapper,
                                 IDataService dataService)
         {
@@ -21,10 +21,10 @@ namespace NetworkPointsWalker.Server.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("GetStations")]
-        public IEnumerable<StationDTO> GetStations()
+        [HttpGet]
+        public IEnumerable<OCPDTO> GetOCPs()
         {
-            return _mapper.Map<IEnumerable<StationDTO>>(_dataService.GetStations().OrderBy(x => x.Name));
+            return _mapper.Map<IEnumerable<OCPDTO>>(_dataService.GetOCPs().OrderBy(x => x.Name));
         }
     }
 }
