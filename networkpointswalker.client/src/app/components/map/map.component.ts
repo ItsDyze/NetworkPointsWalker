@@ -27,6 +27,9 @@ export class MapComponent implements AfterViewInit {
     private context: CanvasRenderingContext2D | null = null;
     private service: MapService;
     private isUpdated: boolean = true;
+    private mouseDrag: boolean = false;
+    private mouseDragStartPos: any;
+    private currentTransformedCursor: any;
     
     constructor(private ocpService: OcpService,
                 private mapService: MapService)
@@ -37,6 +40,27 @@ export class MapComponent implements AfterViewInit {
     
     ngAfterViewInit() {
         let canvas = document.getElementById('map') as HTMLCanvasElement;
+        canvas.addEventListener('mousedown', (e) => {this.mouseDrag = true;})
+        canvas.addEventListener('mouseup', (e) => {this.mouseDrag = false; this.mouseDragStartPos = this.getTransformedPoint(e.offsetX, e.offsetY);})
+        canvas.addEventListener('mousemove', (e) => {            
+            if (this.mouseDrag) {
+                this.currentTransformedCursor = this.getTransformedPoint(e.offsetX, e.offsetY);
+                this.currentTransformedCursor = this.getTransformedPoint(e.offsetX, e.offsetY);
+                this.context?.translate(this.currentTransformedCursor.x - this.mouseDragStartPos.x, this.currentTransformedCursor.y - this.mouseDragStartPos.y);
+                this.Draw();
+            }
+        });
+        canvas.addEventListener("wheel", (e) => {
+            const zoom = e.deltaY < 0 ? 1.1 : 0.9;
+    
+            this.context?.translate(this.currentTransformedCursor.x, this.currentTransformedCursor.y);
+            this.context?.scale(zoom, zoom);
+            this.context?.translate(-this.currentTransformedCursor.x, -this.currentTransformedCursor.y);
+                
+            this.Draw();
+            e.preventDefault();
+        })
+
         if (canvas) {
             this.context = canvas.getContext("2d");
         }
@@ -111,5 +135,10 @@ export class MapComponent implements AfterViewInit {
     
     private Clear() {
         this.context?.clearRect(0, 0, this.width, this.height);
+    }
+
+    private getTransformedPoint(x:number, y:number) {
+        const originalPoint = new DOMPoint(x, y);
+        return this.context?.getTransform().invertSelf().transformPoint(originalPoint);
     }
 }
