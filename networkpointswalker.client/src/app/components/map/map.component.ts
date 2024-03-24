@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { OCP } from '../../models/ocp';
 import { CrawledPath } from '../../models/crawled-path';
-import { StationService } from '../../services/station.service';
-import { Station } from '../../models/station';
+import { OcpService } from '../../services/ocp.service';
 
 @Component({
   selector: 'app-map',
@@ -10,8 +9,8 @@ import { Station } from '../../models/station';
   styleUrl: './map.component.css'
 })
 export class MapComponent {
-  @Input() crawledPath: CrawledPath | null = null;
-  public stations: Station[] = [];
+  @Input() crawledPath: CrawledPath[] | null = null;
+  public ocps: OCP[] = [];
 
   private _height = 2000;
   private _width = 2000;
@@ -23,11 +22,11 @@ export class MapComponent {
   
   private textHeightSpacing = -10;
 
-  constructor(private stationService: StationService)
+  constructor(private ocpService: OcpService)
   {
-    stationService.getStations().subscribe(x => {
-      let lats = x.map(s => s.ocp.coordinates.latitude);
-      let longs = x.map(s => s.ocp.coordinates.longitude);
+    ocpService.getOCPs().subscribe(x => {
+      let lats = x.map(o => o.coordinates.latitude);
+      let longs = x.map(o => o.coordinates.longitude);
 
       let maxLat = Math.max(...lats);
       let minLat = Math.min(...lats);
@@ -35,16 +34,15 @@ export class MapComponent {
       let maxLong = Math.max(...longs);
       let minLong = Math.min(...longs);
       
-      this.stations = x.map(s => {
-        s.normalizedCoords = {
-          latitude: (s.ocp.coordinates.latitude - minLat) / (maxLat - minLat),
-          longitude: (s.ocp.coordinates.longitude - minLong) / (maxLong - minLong)
+      this.ocps = x.map(o => {
+        o.normalizedCoords = {
+          latitude: (o.coordinates.latitude - minLat) / (maxLat - minLat),
+          longitude: (o.coordinates.longitude - minLong) / (maxLong - minLong)
         }
-        return s;
+        return o;
       });
         
       this.buildMap();
-
     });
   }
 
@@ -57,41 +55,35 @@ export class MapComponent {
       context.clearRect(0, 0, this.width, this.height);
       context.fillStyle = "white";
 
-      this.stations.forEach(s => {
-        context?.fillRect(this.getRealValueFromNormalizedValue(s.normalizedCoords.longitude, this._width),
-          this.getRealValueFromNormalizedValue(s.normalizedCoords.latitude, this._height, true),
+      this.ocps.forEach(o => {
+        context?.fillRect(this.getRealValueFromNormalizedValue(o.normalizedCoords.longitude, this._width),
+          this.getRealValueFromNormalizedValue(o.normalizedCoords.latitude, this._height, true),
           this.pointSize,
           this.pointSize);
 
-        context?.fillText(s.name,
-          this.getRealValueFromNormalizedValue(s.normalizedCoords.longitude, this._width),
-          this.getRealValueFromNormalizedValue(s.normalizedCoords.latitude, this._height, true));
+        context?.fillText(o.name,
+          this.getRealValueFromNormalizedValue(o.normalizedCoords.longitude, this._width),
+          this.getRealValueFromNormalizedValue(o.normalizedCoords.latitude, this._height, true));
       });
 
       if (this.crawledPath) {
-        let previousStation: Station | null = null;
-        this.crawledPath.ocPs.forEach(o => {
+        let previousOCP: OCP | null = null;
+        this.crawledPath[0].ocPs.forEach(o => {
+          let currentOCP = this.ocps.filter(ocp => ocp.id == o.id)[0];
 
-          let matchingStation = this.stations.filter(s => s.ocpId == o.id);
-          let currentStation = null;
-          if (matchingStation.length > 0) {
-            currentStation = matchingStation[0];
-          }
-
-          if (currentStation && previousStation && context) {
+          if (o && previousOCP && context) {
             context.strokeStyle = "red";
             context.lineWidth = 3;
             context.beginPath();
-            context.moveTo(this.getRealValueFromNormalizedValue(currentStation.normalizedCoords.longitude, this._width),
-              this.getRealValueFromNormalizedValue(currentStation.normalizedCoords.latitude, this._height, true));
-            context.lineTo(this.getRealValueFromNormalizedValue(previousStation.normalizedCoords.longitude, this._width),
-              this.getRealValueFromNormalizedValue(previousStation.normalizedCoords.latitude, this._height, true));
+            context.moveTo(this.getRealValueFromNormalizedValue(currentOCP.normalizedCoords.longitude, this._width),
+              this.getRealValueFromNormalizedValue(currentOCP.normalizedCoords.latitude, this._height, true));
+            context.lineTo(this.getRealValueFromNormalizedValue(previousOCP.normalizedCoords.longitude, this._width),
+              this.getRealValueFromNormalizedValue(previousOCP.normalizedCoords.latitude, this._height, true));
             context.stroke();
 
           }
 
-
-          previousStation = currentStation ? currentStation : previousStation;
+          previousOCP = currentOCP ? currentOCP : previousOCP;
 
         })
       }

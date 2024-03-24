@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Station } from "../models/station";
 import { Observable, of } from "rxjs";
+import { OCP } from "../models/ocp";
 
 @Injectable()
-export class StationService
+export class OcpService
 {
 
   private readonly host = "https://localhost:7043";
@@ -14,8 +14,8 @@ export class StationService
 
   }
 
-  public getStations(): Observable<Station[]>
+  public getOCPs(): Observable<OCP[]>
   {
-    return this.http.get<Station[]>(this.host + "/Station/GetStations");
+    return this.http.get<OCP[]>(this.host + "/OCP");
   }
 }
