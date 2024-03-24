@@ -4,6 +4,9 @@ import { CrawledPath } from './models/crawled-path';
 import { OCP } from './models/ocp';
 import { OcpService } from './services/ocp.service';
 import { GraphService } from './services/graph.service';
+import { Constants } from '../constants';
+import { BehaviorSubject, Observable, map, of, tap } from 'rxjs';
+import { MapService } from './services/map.service';
 
 @Component({
   selector: 'app-root',
@@ -12,13 +15,12 @@ import { GraphService } from './services/graph.service';
 })
 export class AppComponent implements OnInit {
   public ocps: OCP[] = [];
-  public path: CrawledPath|null = null;
-
   public ocpFrom: string = "Luxembourg";
   public ocpTo: string = "Leudelange";
 
   constructor(private ocpService: OcpService,
-              private graphService: GraphService) { }
+              private graphService: GraphService,
+              private mapService: MapService) { }
 
   ngOnInit() {
     this.getOCPs();
@@ -41,11 +43,10 @@ export class AppComponent implements OnInit {
   }
 
   getShortestPath(a:string, b:string) {
-    this.graphService.getShortestPath(a, b).subscribe(
-      (result) => {
-        this.path = result;
-      }
-    );
+    this.graphService.getShortestPath(a, b)
+        .subscribe((res) => {
+            this.mapService.SetPaths([res]);
+        })
   }
 
   title = 'networkpointswalker.client';

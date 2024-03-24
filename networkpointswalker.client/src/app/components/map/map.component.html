@@ -1,9 +1,6 @@
-<canvas *ngIf="ocps"
-        id="map"
-        [height]="height"
-        [width]="width"
-        
+<canvas id="map"
+        [height]="Constants.MAP.HEIGHT"
+        [width]="Constants.MAP.WIDTH"
         style="border: 1px solid black;">
 
 </canvas>
-<button (click)="buildMap()">reload</button>

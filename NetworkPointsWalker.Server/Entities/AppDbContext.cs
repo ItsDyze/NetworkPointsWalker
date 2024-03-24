@@ -329,7 +329,8 @@ namespace NetworkPointsWalker.Server.Entities
                 new Track() { Id = Guid.NewGuid(), OCPFromName = "Troisvierges", OCPToName = "Troisvierges frontière"},
                 new Track() { Id = Guid.NewGuid(), OCPFromName = "Déviation vers 6h", OCPToName = "Rodange frontière B Aub"},
                 new Track() { Id = Guid.NewGuid(), OCPFromName = "Esch-sur-Alzette", OCPToName = "Esch-frontière"},
-                new Track() { Id = Guid.NewGuid(), OCPFromName = "Kleinbettingen", OCPToName = "Kleinbettingen frontière"}
+                new Track() { Id = Guid.NewGuid(), OCPFromName = "Kleinbettingen", OCPToName = "Kleinbettingen frontière"},
+                new Track() { Id = Guid.NewGuid(), OCPFromName = "Esch-sur-Alzette", OCPToName = "Audun-le-Tiche" }
             ];
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 

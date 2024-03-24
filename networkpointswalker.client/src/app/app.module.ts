@@ -17,6 +17,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MapComponent } from './components/map/map.component';
 import { OcpService } from './services/ocp.service';
 import { GraphService } from './services/graph.service';
+import { MapService } from './services/map.service';
 
 
 @NgModule({
@@ -39,7 +40,8 @@ import { GraphService } from './services/graph.service';
   providers: [
     provideAnimationsAsync(),
     OcpService,
-    GraphService
+    GraphService,
+    MapService
   ],
   bootstrap: [AppComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

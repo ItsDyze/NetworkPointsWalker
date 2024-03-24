@@ -1,104 +1,118 @@
-import { Component, Input } from '@angular/core';
+import { AfterViewInit, Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { OCP } from '../../models/ocp';
 import { CrawledPath } from '../../models/crawled-path';
 import { OcpService } from '../../services/ocp.service';
+import { Constants } from '../../../constants';
+import { Observable, of, tap } from 'rxjs';
+import { MapService } from '../../services/map.service';
+import { MapLocation } from '../../models/map-location';
+import { Segment } from '../../models/segment';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrl: './map.component.css'
+    selector: 'app-map',
+    templateUrl: './map.component.html',
+    styleUrl: './map.component.css'
 })
-export class MapComponent {
-  @Input() crawledPath: CrawledPath[] | null = null;
-  public ocps: OCP[] = [];
-
-  private _height = 2000;
-  private _width = 2000;
-  private margin = 100;
-  private pointSize = 4;
-
-  public height: number = this._height + this.margin;
-  public width: number = this._width + this.margin;
-  
-  private textHeightSpacing = -10;
-
-  constructor(private ocpService: OcpService)
-  {
-    ocpService.getOCPs().subscribe(x => {
-      let lats = x.map(o => o.coordinates.latitude);
-      let longs = x.map(o => o.coordinates.longitude);
-
-      let maxLat = Math.max(...lats);
-      let minLat = Math.min(...lats);
-
-      let maxLong = Math.max(...longs);
-      let minLong = Math.min(...longs);
-      
-      this.ocps = x.map(o => {
-        o.normalizedCoords = {
-          latitude: (o.coordinates.latitude - minLat) / (maxLat - minLat),
-          longitude: (o.coordinates.longitude - minLong) / (maxLong - minLong)
-        }
-        return o;
-      });
+export class MapComponent implements AfterViewInit {
+    
+    public Constants = Constants;
+    
+    private margin: number = Constants.MAP.MARGIN;
+    private pointSize: number = Constants.MAP.POINT_SIZE;
+    private textHeightSpacing: number = Constants.MAP.TEXT_HEIGHT_SPACING;
+    private height: number = 0;
+    private width: number = 0;
+    private locations: MapLocation[] = [];
+    private segments: Segment[] = [];
+    private context: CanvasRenderingContext2D | null = null;
+    private service: MapService;
+    
+    constructor(private ocpService: OcpService,
+                private mapService: MapService)
+    {
+        this.service = mapService;
         
-      this.buildMap();
-    });
-  }
-
-  public buildMap()
-  {
-    let canvas = document.getElementById('map') as
-      HTMLCanvasElement;
-    let context = canvas.getContext("2d");
-    if (context != null) {
-      context.clearRect(0, 0, this.width, this.height);
-      context.fillStyle = "white";
-
-      this.ocps.forEach(o => {
-        context?.fillRect(this.getRealValueFromNormalizedValue(o.normalizedCoords.longitude, this._width),
-          this.getRealValueFromNormalizedValue(o.normalizedCoords.latitude, this._height, true),
-          this.pointSize,
-          this.pointSize);
-
-        context?.fillText(o.name,
-          this.getRealValueFromNormalizedValue(o.normalizedCoords.longitude, this._width),
-          this.getRealValueFromNormalizedValue(o.normalizedCoords.latitude, this._height, true));
-      });
-
-      if (this.crawledPath) {
-        let previousOCP: OCP | null = null;
-        this.crawledPath[0].ocPs.forEach(o => {
-          let currentOCP = this.ocps.filter(ocp => ocp.id == o.id)[0];
-
-          if (o && previousOCP && context) {
-            context.strokeStyle = "red";
-            context.lineWidth = 3;
-            context.beginPath();
-            context.moveTo(this.getRealValueFromNormalizedValue(currentOCP.normalizedCoords.longitude, this._width),
-              this.getRealValueFromNormalizedValue(currentOCP.normalizedCoords.latitude, this._height, true));
-            context.lineTo(this.getRealValueFromNormalizedValue(previousOCP.normalizedCoords.longitude, this._width),
-              this.getRealValueFromNormalizedValue(previousOCP.normalizedCoords.latitude, this._height, true));
-            context.stroke();
-
-          }
-
-          previousOCP = currentOCP ? currentOCP : previousOCP;
-
-        })
-      }
-
-    }
-  }
-
-  private getRealValueFromNormalizedValue(v: number, maxValue: number, revert:boolean = false): number
-  {
-    if (revert) {
-      return maxValue - (Math.abs(v) * maxValue) + (this.margin / 2);
-    }
-    else {
-      return (Math.abs(v) * maxValue) + (this.margin / 2);
     }
     
-  }
+    ngAfterViewInit() {
+        let canvas = document.getElementById('map') as HTMLCanvasElement;
+        if (canvas) {
+            this.context = canvas.getContext("2d");
+        }
+        else {
+            console.error("Couldn't load the canvas context");
+        }
+        this.height = canvas.height;
+        this.width = canvas.width;
+        this.StartDrawing();
+
+        this.service.Locations$.subscribe((res) => {
+            if(res)
+            {
+                this.AddLocation(res);
+            }
+        });
+        this.service.Segments$.subscribe((res) => {
+            if(res)
+            {
+                this.AddSegment(res);
+            }
+        });
+    }
+    
+    public SetContext(canvas: HTMLCanvasElement){
+        let retrievedCanvas = canvas.getContext("2d");
+        
+    }
+    
+    public AddLocation(x: MapLocation) {
+        this.locations.push(x);
+        this.Draw();
+    }
+
+    public AddSegment(x: Segment) {
+        this.segments.push(x);
+        this.Draw();
+    }
+    
+    public AddPath(path: CrawledPath)
+    {
+        let previousLocation: MapLocation|null = null;
+        path.ocPs.forEach(o => {
+            if(!previousLocation){
+                previousLocation = new MapLocation(o.name, o.preparedCoords);
+            }
+            else
+            {
+                let nextLocation = new MapLocation(o.name, o.preparedCoords);
+                this.AddSegment(new Segment(previousLocation, nextLocation));
+                previousLocation = nextLocation;
+            }
+        });
+    }
+
+    public ClearData() {
+        this.locations = [];
+        this.segments = [];
+    }
+    
+    public StartDrawing() {
+        if(!this.context){
+            throw new Error("Context not set");
+        }
+
+        setTimeout(() => {
+            this.Draw();
+        }, 1000);
+    }
+    
+    private Draw() {
+        this.Clear();
+        this.locations.forEach(l => l.Draw(this.context!));
+        this.segments.forEach(s => s.Draw(this.context!));
+    }
+    
+    private Clear() {
+        this.context?.clearRect(0, 0, this.width, this.height);
+    }
 }
