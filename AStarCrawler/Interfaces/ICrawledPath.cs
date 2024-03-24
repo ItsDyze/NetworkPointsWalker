@@ -12,6 +12,7 @@ namespace AStarCrawler.Interfaces
         HashSet<IEdge> Edges { get; set; }
         HashSet<IVertex> Vertices { get; set; }
         TimeSpan ProcessingTime { get; set; }
+        bool IsValidSolution { get; set; }
 
     }
 }

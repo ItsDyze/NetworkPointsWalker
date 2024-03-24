@@ -19,7 +19,6 @@ namespace AStarCrawler
         private IVertex _endVertex;
         private HashSet<IVertex> _vertices;
         private HashSet<IEdge> _edges;
-        private HashSet<Guid> _exploredVertices;
         private ICrawledPath _currentPath;
         private bool _isDone = false;
         private double _invertHeuristicValue = 0;
@@ -28,14 +27,13 @@ namespace AStarCrawler
         public double InvertHeuristicValue => _invertHeuristicValue;
         public ICrawledPath Path => _currentPath;
 
-        public AStarInstance(IVertex startVertex, IVertex endVertex, HashSet<IVertex> vertices, HashSet<IEdge> edges, HashSet<Guid> exploredVertices, ICrawledPath currentPath = null)
+        public AStarInstance(IVertex startVertex, IVertex endVertex, HashSet<IVertex> vertices, HashSet<IEdge> edges, ICrawledPath currentPath = null)
         {
             _invertHeuristicValue = startVertex.InvertHeuristicValue;
             _startVertex = startVertex;
             _endVertex = endVertex;
             _vertices = vertices;
             _edges = edges;
-            _exploredVertices = exploredVertices;
 
             _currentPath = currentPath == null ? new CrawledPath() : currentPath;
             
@@ -49,12 +47,12 @@ namespace AStarCrawler
 
             if (_startVertex == _endVertex)
             {
-                _exploredVertices.Add(_startVertex.Id);
+                _currentPath.IsValidSolution = true;
                 return true;
             }
 
             var relevantOrderedEdges = _edges.FromOrigin(_startVertex.Id)
-                                                .NotExplored(_exploredVertices)
+                                                .NotExplored(_currentPath.Vertices, _startVertex.Id)
                                                 .OrderBy(edge => _vertices.Single(vertex => vertex.Id == edge.GetOtherVertexId(_startVertex.Id)).InvertHeuristicValue);
 
             foreach (var edge in relevantOrderedEdges)
@@ -63,10 +61,9 @@ namespace AStarCrawler
                 newPath.Edges.Add(edge);
 
                 var theOtherVertex = _vertices.Single(vertex => vertex.Id == edge.GetOtherVertexId(_startVertex.Id));
-                newInstances = newInstances.Append(new AStarInstance(theOtherVertex, _endVertex, _vertices, _edges, _exploredVertices, newPath));
+                newInstances = newInstances.Append(new AStarInstance(theOtherVertex, _endVertex, _vertices, _edges, newPath));
             }
 
-            _exploredVertices.Add(_startVertex.Id);
             return false;
         }
     }

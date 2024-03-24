@@ -12,6 +12,7 @@ namespace AStarCrawler.Models
         public HashSet<IVertex> Vertices { get; set; }
         public HashSet<IEdge> Edges { get; set; }
         public TimeSpan ProcessingTime {  get; set; }
+        public bool IsValidSolution { get; set; } = false;
 
         public CrawledPath()
         {
