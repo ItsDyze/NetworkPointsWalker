@@ -9,8 +9,8 @@ namespace AStarCrawler.Interfaces
 {
     public interface ICrawledPath
     {
-        HashSet<IEdge> Edges { get; set; }
-        HashSet<IVertex> Vertices { get; set; }
+        IList<IEdge> Edges { get; set; }
+        IList<IVertex> Vertices { get; set; }
         TimeSpan ProcessingTime { get; set; }
         bool IsValidSolution { get; set; }
 

@@ -9,21 +9,21 @@ namespace AStarCrawler.Models
 {
     internal class CrawledPath:ICrawledPath
     {
-        public HashSet<IVertex> Vertices { get; set; }
-        public HashSet<IEdge> Edges { get; set; }
+        public IList<IVertex> Vertices { get; set; }
+        public IList<IEdge> Edges { get; set; }
         public TimeSpan ProcessingTime {  get; set; }
         public bool IsValidSolution { get; set; } = false;
 
         public CrawledPath()
         {
-            Vertices = new HashSet<IVertex>();
-            Edges = new HashSet<IEdge>();
+            Vertices = new List<IVertex>();
+            Edges = new List<IEdge>();
         }
 
         public CrawledPath(ICrawledPath path)
         {
-            Edges = new HashSet<IEdge>(path.Edges);
-            Vertices = new HashSet<IVertex>(path.Vertices);
+            Edges = new List<IEdge>(path.Edges);
+            Vertices = new List<IVertex>(path.Vertices);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace AStarCrawler.Queries
             return edges.Where(e => (e.VertexA == originId || e.VertexB == originId));
         }
 
-        public static IEnumerable<IEdge> NotExplored(this IEnumerable<IEdge> edges, HashSet<IVertex> exploredVertices, Guid originId)
+        public static IEnumerable<IEdge> NotExplored(this IEnumerable<IEdge> edges, IEnumerable<IVertex> exploredVertices, Guid originId)
         {
             return edges.Where(e => !exploredVertices.Any(v => e.GetOtherVertexId(originId) == v.Id));
         }

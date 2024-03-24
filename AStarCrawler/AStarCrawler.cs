@@ -35,7 +35,7 @@ namespace AStarCrawler
             while (awaitingInstances.Count(instance => !instance.IsDone) > 0)
             {
                 foundPath = false;
-                IAStarInstance crawlerToProcess = FindCrawlerToProcess(awaitingInstances);
+                IAStarInstance crawlerToProcess = FindInstanceToProcess(awaitingInstances);
                 IEnumerable<IAStarInstance> newInstances;
 
                 foundPath = crawlerToProcess.Run(out newInstances);
@@ -63,7 +63,7 @@ namespace AStarCrawler
             }
         }
 
-        private static IAStarInstance FindCrawlerToProcess(ConcurrentBag<IAStarInstance> awaitingInstances)
+        private static IAStarInstance FindInstanceToProcess(ConcurrentBag<IAStarInstance> awaitingInstances)
         {
             var minHeuristic = awaitingInstances.Where(x => !x.IsDone).Min(x => x.InvertHeuristicValue);
             var crawlerToProcess = awaitingInstances.First(y => !y.IsDone && y.InvertHeuristicValue == minHeuristic);
