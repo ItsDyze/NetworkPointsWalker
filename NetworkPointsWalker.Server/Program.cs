@@ -10,13 +10,7 @@ using NetworkPointsWalker.Server.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddCors(options =>
-            options.AddPolicy("DefaultCorsPolicy", builder => builder
-                .AllowAnyOrigin()
-                .AllowAnyHeader()
-                .AllowAnyMethod())
-        );
+// Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(
     options => options.UseInMemoryDatabase("NetworkPointWalker")
@@ -54,7 +48,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("DefaultCorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

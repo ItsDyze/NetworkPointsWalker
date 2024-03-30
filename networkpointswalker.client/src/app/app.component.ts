@@ -7,6 +7,7 @@ import { GraphService } from './services/graph.service';
 import { Constants } from '../constants';
 import { BehaviorSubject, Observable, map, of, tap } from 'rxjs';
 import { MapService } from './services/map.service';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -23,6 +24,7 @@ export class AppComponent implements OnInit {
               private mapService: MapService) { }
 
   ngOnInit() {
+    console.log("Is prod", environment.production)
     this.getOCPs();
   }
 

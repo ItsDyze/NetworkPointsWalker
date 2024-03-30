@@ -6,9 +6,6 @@ import { OCP } from "../models/ocp";
 @Injectable()
 export class OcpService
 {
-
-  private readonly host = "https://localhost:7043";
-
   constructor(private http: HttpClient)
   {
 
@@ -16,6 +13,6 @@ export class OcpService
 
   public getOCPs(): Observable<OCP[]>
   {
-    return this.http.get<OCP[]>(this.host + "/OCP");
+    return this.http.get<OCP[]>("api/OCP");
   }
 }
