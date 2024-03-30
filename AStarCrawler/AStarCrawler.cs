@@ -1,5 +1,6 @@
 ﻿using AStarCrawler.Interfaces;
 using System.Collections.Concurrent;
+using System.Timers;
 
 namespace AStarCrawler
 {
@@ -26,6 +27,8 @@ namespace AStarCrawler
 
             var startVertex = vertices.Single(x => x.Id == from);
             var endVertex = vertices.Single(x => x.Id == to);
+
+            //HashSet<IEdge> simplifiedEdges = GetSimplifiedEdges(edges);
 
 
             IAStarInstance firstInstance = new AStarInstance(startVertex, endVertex, vertices, edges);
@@ -63,7 +66,25 @@ namespace AStarCrawler
             }
         }
 
-        private static IAStarInstance FindInstanceToProcess(ConcurrentBag<IAStarInstance> awaitingInstances)
+        private HashSet<IEdge> GetSimplifiedEdges(HashSet<IEdge> edges)
+        {
+            throw new NotImplementedException();
+            var result = edges;
+            var vertices = edges.Select(e => { return new[]{ e.VertexA, e.VertexB }; }).SelectMany(x => x);
+            var candidateVertices = vertices.GroupBy(x => x)
+                                            .Select(group => new {Key = group.Key, Value = group.Count()})
+                                            .Where(x => x.Value == 1)
+                                            .ToDictionary(x => x.Key, x => x.Value);
+
+            foreach (var vertex in candidateVertices)
+            {
+                
+            }
+
+            return edges;
+        }
+
+        private IAStarInstance FindInstanceToProcess(ConcurrentBag<IAStarInstance> awaitingInstances)
         {
             var minHeuristic = awaitingInstances.Where(x => !x.IsDone).Min(x => x.InvertHeuristicValue);
             var crawlerToProcess = awaitingInstances.First(y => !y.IsDone && y.InvertHeuristicValue == minHeuristic);
