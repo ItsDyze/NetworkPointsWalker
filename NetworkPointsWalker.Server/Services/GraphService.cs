@@ -76,6 +76,26 @@ namespace NetworkPointsWalker.Server.Services
             });
         }
 
+        public IEnumerable<CrawledPathDTO> GetAllPaths(Guid startId, Guid endId)
+        {
+            var awaitingInstances = new ConcurrentBag<IAStarInstance>();
+            var destination = OCPs.First(x => x.Id == endId);
+
+            HashSet<IVertex> vertices = PrepareVertices(destination);
+            HashSet<IEdge> edges = _mapper.Map<HashSet<IEdge>>(Tracks);
+
+            var crawledPaths = _crawler.GetAllPaths(startId, endId, edges, vertices, false);
+            return crawledPaths.Select(p =>
+            {
+                var path = new CrawledPathDTO()
+                {
+                    OCPs = _mapper.Map<IEnumerable<OCPDTO>>(p.Vertices.Select(x => OCPs.Single(y => y.Id == x.Id))).ToList(),
+                    IsValid = p.IsValidSolution
+                };
+                return path;
+            });
+        }
+
         private HashSet<IVertex> PrepareVertices(OCP destination)
         {
             Dictionary<Guid, double> OCPHeuristics = _ocpService.GetOCPHeuristics(destination, OCPs);

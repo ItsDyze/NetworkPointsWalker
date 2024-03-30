@@ -16,4 +16,9 @@ export class GraphService
   {
     return this.http.get<CrawledPath>("api/Graph/GetShortestPath?from=" + a + "&to=" + b);
   }
+
+  public getAllPaths(a: string, b: string): Observable<CrawledPath[]>
+  {
+    return this.http.get<CrawledPath[]>("api/Graph/GetAllPaths?from=" + a + "&to=" + b);
+  }
 }

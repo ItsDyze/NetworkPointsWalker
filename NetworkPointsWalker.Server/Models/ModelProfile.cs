@@ -8,7 +8,6 @@ namespace NetworkPointsWalker.Server.Models
     {
         public ModelProfile()
         {
-            CreateMap<Station, StationModel>();
             CreateMap<Track, TrackModel>();
             CreateMap<Track, IEdge>().As<TrackModel>();
             CreateMap<OCP, OCPModel>();

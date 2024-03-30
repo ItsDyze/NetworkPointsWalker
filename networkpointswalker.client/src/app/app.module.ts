@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -36,6 +37,7 @@ import { MapService } from './services/map.service';
     MatFormFieldModule,
     MatOptionModule,
     MatButtonModule,
+    MatSlideToggleModule,
   ],
   providers: [
     provideAnimationsAsync(),

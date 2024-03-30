@@ -3,10 +3,11 @@ import { OCP } from '../../models/ocp';
 import { CrawledPath } from '../../models/crawled-path';
 import { OcpService } from '../../services/ocp.service';
 import { Constants } from '../../../constants';
-import { Observable, of, tap } from 'rxjs';
+import { Observable, of, tap, timeout } from 'rxjs';
 import { MapService } from '../../services/map.service';
 import { MapLocation } from '../../models/map-location';
 import { Segment } from '../../models/segment';
+import { MapPath } from '../../models/map-path';
 
 @Component({
     selector: 'app-map',
@@ -23,14 +24,24 @@ export class MapComponent implements AfterViewInit {
     private height: number = 0;
     private width: number = 0;
     private locations: MapLocation[] = [];
-    private segments: Segment[] = [];
+    private paths: MapPath[] = [];
     private context: CanvasRenderingContext2D | null = null;
     private _canvas: HTMLCanvasElement|any;
     private service: MapService;
-    private isUpdated: boolean = true;
     private mouseDrag: boolean = false;
     private mouseDragStartPos: any;
     private currentTransformedCursor: any;
+    private drawingIndex: number = 0;
+
+    public showAllNames: boolean = false;
+    public showAllPaths: boolean = true;
+
+    get pathsCount() {
+        return this.paths.length;
+    }
+    get currentPathId() {
+        return this.drawingIndex + 1;
+    }
     
     constructor(private ocpService: OcpService,
                 private mapService: MapService)
@@ -38,7 +49,6 @@ export class MapComponent implements AfterViewInit {
         this.service = mapService;
         
     }
-    
     ngAfterViewInit() {
         let canvas = document.getElementById('map') as HTMLCanvasElement;
         this._canvas = canvas;
@@ -74,68 +84,41 @@ export class MapComponent implements AfterViewInit {
         }
         this.height = canvas.height;
         this.width = canvas.width;
-        this.StartDrawing();
 
-        this.service.Locations$.subscribe((res) => {
-            if(res)
-            {
-                this.AddLocation(res);
-            }
-        });
-        this.service.Segments$.subscribe((res) => {
-            if(res)
-            {
-                this.AddSegment(res);
-            }
-        });
-    }
-    
-    public AddLocation(x: MapLocation) {
-        this.locations.push(x);
-        this.Draw();
-    }
-
-    public AddSegment(x: Segment) {
-        this.segments.push(x);
-        this.Draw();
-    }
-    
-    public AddPath(path: CrawledPath)
-    {
-        let previousLocation: MapLocation|null = null;
-        this.segments = [];
-        path.ocPs.forEach(o => {
-            if(!previousLocation){
-                previousLocation = new MapLocation(o.name, o.preparedCoords);
-            }
-            else
-            {
-                let nextLocation = new MapLocation(o.name, o.preparedCoords);
-                this.AddSegment(new Segment(previousLocation, nextLocation));
-                previousLocation = nextLocation;
-            }
-        });
-    }
-    
-    public StartDrawing() {
-        if(!this.context){
-            throw new Error("Context not set");
-        }
-
-        setTimeout(() => {
-            if(this.isUpdated)
-            {
-                this.Clear();
+        this.mapService.Locations$.subscribe((l) => {
+            if(l){
+                this.locations.push(l);
                 this.Draw();
-                this.isUpdated = false;
             }
-        }, 1000);
+        });
+
+        this.mapService.Paths$.subscribe((p) => {
+            if(p)
+            {
+                this.paths = p;
+                this.Draw();
+            }
+        });
     }
     
-    private Draw() {
+    public Draw(cyclePath: boolean = false) {
+        this.drawingIndex = cyclePath && this.paths.length - 1 > this.drawingIndex ? this.drawingIndex + 1 : 0;
         this.Clear();
-        this.locations.forEach(l => l.Draw(this.context!));
-        this.segments.forEach(s => s.Draw(this.context!));
+        let namesToShow: string[] = [];
+        let pathsToDraw: MapPath[] = this.showAllPaths ?  this.paths : [this.paths[this.drawingIndex]];
+        pathsToDraw.forEach(p => {
+            if(p)
+            {
+                if(!this.showAllNames)
+                {
+                    namesToShow = this.getTargetedLocationNames(p);
+                }
+        
+                p.segments.forEach(s => s.Draw(this.context!));
+            }
+        })
+
+        this.locations.forEach(l => l.Draw(this.context!, namesToShow));
     }
     
     private Clear() {
@@ -154,4 +137,13 @@ export class MapComponent implements AfterViewInit {
         const originalPoint = new DOMPoint(x, y);
         return this.context?.getTransform().invertSelf().transformPoint(originalPoint);
     }
+
+    private getTargetedLocationNames(path: MapPath): string[] {
+        let result: string[] = [];
+        path.locations.forEach(l => {
+                result.push(l.name);
+        });
+        return result;
+    }
 }
+

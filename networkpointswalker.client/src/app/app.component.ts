@@ -24,7 +24,6 @@ export class AppComponent implements OnInit {
               private mapService: MapService) { }
 
   ngOnInit() {
-    console.log("Is prod", environment.production)
     this.getOCPs();
   }
 
@@ -33,23 +32,26 @@ export class AppComponent implements OnInit {
       (result) => {
         this.ocps = result;
         this.ocpFrom = result.filter(x => x.name == "Luxembourg")[0].id;
-        this.ocpTo = result.filter(x => x.name == "Leudelange")[0].id;
+        this.ocpTo = result.filter(x => x.name == "Wecker")[0].id;
       }
     );
   }
 
-  search() {
+  getShortest() {
     if (this.ocpFrom && this.ocpTo) {
-      this.getShortestPath(this.ocpFrom, this.ocpTo);
-    }
-  }
-
-  getShortestPath(a:string, b:string) {
-    this.graphService.getShortestPath(a, b)
+        this.graphService.getShortestPath(this.ocpFrom, this.ocpTo)
         .subscribe((res) => {
             this.mapService.SetPaths([res]);
         })
+    }
   }
 
-  title = 'networkpointswalker.client';
+  getAll(){
+    if (this.ocpFrom && this.ocpTo) {
+        this.graphService.getAllPaths(this.ocpFrom, this.ocpTo)
+        .subscribe((res) => {
+            this.mapService.SetPaths(res);
+        })
+    }
+  }
 }

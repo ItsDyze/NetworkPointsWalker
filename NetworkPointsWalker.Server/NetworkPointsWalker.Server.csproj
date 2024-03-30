@@ -22,9 +22,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AStarCrawler\AStarCrawler.csproj" />
-    <ProjectReference Include="..\networkpointswalker.client\networkpointswalker.client.esproj">
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
 
 </Project>

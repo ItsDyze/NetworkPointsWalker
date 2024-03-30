@@ -6,5 +6,6 @@ namespace NetworkPointsWalker.Server.Services.Interfaces
     {
         public CrawledPathDTO GetShortestPath(Guid StartId, Guid EndId);
         IEnumerable<CrawledPathDTO> GetShortestPathWithCandidates(Guid startId, Guid endId);
+        IEnumerable<CrawledPathDTO> GetAllPaths(Guid startId, Guid endId);
     }
 }

@@ -6,6 +6,7 @@ import { CrawledPath } from "../models/crawled-path";
 import { OcpService } from "./ocp.service";
 import { OCP } from "../models/ocp";
 import { BehaviorSubject, Observable } from "rxjs";
+import { MapPath } from "../models/map-path";
 
 @Injectable({
     providedIn: 'root',
@@ -14,11 +15,12 @@ export class MapService
 {
 
     public OCPs: OCP[] = [];
-    public Paths: CrawledPath[] = [];
     private _locationsSubject: BehaviorSubject<MapLocation|null> = new BehaviorSubject<MapLocation|null>(null);
     public Locations$: Observable<MapLocation|null> = this._locationsSubject.asObservable();
     private _segmentSubject: BehaviorSubject<Segment|null> = new BehaviorSubject<Segment|null>(null);
     public Segments$: Observable<Segment|null> = this._segmentSubject.asObservable();
+    private _pathSubject: BehaviorSubject<MapPath[]|null> = new BehaviorSubject<MapPath[]|null>(null);
+    public Paths$: Observable<MapPath[]|null> = this._pathSubject.asObservable();
     private OCPService: OcpService;    
     
     constructor(private ocpService: OcpService) {
@@ -34,10 +36,21 @@ export class MapService
 
     public SetPaths(paths: CrawledPath[])
     {
-        paths.forEach(path => {
-            let segments = this.prepareSegments(path);
-            segments.forEach(s => this._segmentSubject.next(s));
+        let newPaths:MapPath[] = paths.map<MapPath>((p, i) => {
+            let segments = this.prepareSegments(p);
+            let locations:any = [];
+            segments.forEach(s => {
+                locations.push(s.locationA, s.locationB)
+            })
+            locations = [...new Set(locations)];
+
+            return {
+                id: i,
+                segments: segments,
+                locations: locations
+            };
         });
+        this._pathSubject.next(newPaths);
     }
 
     private prepareOCPs(x: OCP[]): OCP[] {

@@ -1,6 +1,28 @@
-<canvas id="map"
+<div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+    <div style="display: flex;">
+        <canvas id="map"
         [height]="Constants.MAP.HEIGHT"
         [width]="Constants.MAP.WIDTH"
         style="border: 1px solid black;">
 
-</canvas>
+        </canvas>
+    </div>
+    <div style="display: flex; flex-direction: column; border: 1px solid rgba(33,255,214,0.79); color:white">
+        <div style="display: flex;">
+            <mat-slide-toggle [(ngModel)]="showAllNames" (ngModelChange)="Draw()">Show all names</mat-slide-toggle>
+        </div>
+        <div style="display: flex;">
+            <mat-slide-toggle [(ngModel)]="showAllPaths" (ngModelChange)="Draw()">Show all paths</mat-slide-toggle>
+        </div>
+        <div style="display: flex;">
+            <span *ngIf="!showAllPaths && pathsCount">Path {{currentPathId}} out of {{pathsCount}}</span>
+        </div>
+        <div style="display: flex;">
+            <button mat-raised-button color="primary" *ngIf="!showAllPaths && pathsCount" (click)="Draw(true)">Cycle</button>
+        </div>
+    </div>
+</div>
+
+
+
+

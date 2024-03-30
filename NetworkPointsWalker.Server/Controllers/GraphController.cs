@@ -37,5 +37,13 @@ namespace NetworkPointsWalker.Server.Controllers
 
             return result;
         }
+
+        [HttpGet("GetAllPaths")]
+        public IEnumerable<CrawledPathDTO> GetAllPaths(Guid from, Guid to)
+        {
+            var result = _graphService.GetAllPaths(from, to);
+
+            return result;
+        }
     }
 }

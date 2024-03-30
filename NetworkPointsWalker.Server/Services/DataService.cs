@@ -18,12 +18,6 @@ namespace NetworkPointsWalker.Server.Services
             return _db.OCPs;
         }
 
-        public IEnumerable<Station> GetStations()
-        {
-            return _db.Stations
-                        .Include(x => x.OCP);
-        }
-
         public IEnumerable<Track> GetTracks()
         {
             return _db.Tracks;
