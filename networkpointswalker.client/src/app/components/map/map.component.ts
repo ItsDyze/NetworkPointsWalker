@@ -25,6 +25,7 @@ export class MapComponent implements AfterViewInit {
     private locations: MapLocation[] = [];
     private segments: Segment[] = [];
     private context: CanvasRenderingContext2D | null = null;
+    private _canvas: HTMLCanvasElement|any;
     private service: MapService;
     private isUpdated: boolean = true;
     private mouseDrag: boolean = false;
@@ -40,25 +41,29 @@ export class MapComponent implements AfterViewInit {
     
     ngAfterViewInit() {
         let canvas = document.getElementById('map') as HTMLCanvasElement;
-        canvas.addEventListener('mousedown', (e) => {this.mouseDrag = true;})
-        canvas.addEventListener('mouseup', (e) => {this.mouseDrag = false; this.mouseDragStartPos = this.getTransformedPoint(e.offsetX, e.offsetY);})
+        this._canvas = canvas;
+        canvas.addEventListener('mousedown', (e) => {this.mouseDrag = true; this.mouseDragStartPos = this.getTransformedPoint(e.offsetX, e.offsetY);})
+        canvas.addEventListener('mouseup', (e) => {this.mouseDrag = false; })
         canvas.addEventListener('mousemove', (e) => {            
             if (this.mouseDrag) {
-                this.currentTransformedCursor = this.getTransformedPoint(e.offsetX, e.offsetY);
                 this.currentTransformedCursor = this.getTransformedPoint(e.offsetX, e.offsetY);
                 this.context?.translate(this.currentTransformedCursor.x - this.mouseDragStartPos.x, this.currentTransformedCursor.y - this.mouseDragStartPos.y);
                 this.Draw();
             }
         });
         canvas.addEventListener("wheel", (e) => {
-            const zoom = e.deltaY < 0 ? 1.1 : 0.9;
+            if(this.currentTransformedCursor)
+            {
+                const zoom = e.deltaY < 0 ? 1.1 : 0.9;
     
-            this.context?.translate(this.currentTransformedCursor.x, this.currentTransformedCursor.y);
-            this.context?.scale(zoom, zoom);
-            this.context?.translate(-this.currentTransformedCursor.x, -this.currentTransformedCursor.y);
-                
-            this.Draw();
-            e.preventDefault();
+                this.context?.translate(this.currentTransformedCursor.x, this.currentTransformedCursor.y);
+                this.context?.scale(zoom, zoom);
+                this.context?.translate(-this.currentTransformedCursor.x, -this.currentTransformedCursor.y);
+                    
+                this.Draw();
+                e.preventDefault();
+            }
+            
         })
 
         if (canvas) {
@@ -134,7 +139,15 @@ export class MapComponent implements AfterViewInit {
     }
     
     private Clear() {
-        this.context?.clearRect(0, 0, this.width, this.height);
+        // Store the current transformation matrix
+        this.context?.save();
+
+        // Use the identity matrix while clearing the canvas
+        this.context?.setTransform(1, 0, 0, 1, 0, 0);
+        this.context?.clearRect(0, 0, this._canvas.width, this._canvas.height);
+
+        // Restore the transform
+        this.context?.restore();
     }
 
     private getTransformedPoint(x:number, y:number) {
