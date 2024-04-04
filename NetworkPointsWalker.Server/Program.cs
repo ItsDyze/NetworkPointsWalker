@@ -8,8 +8,23 @@ using NetworkPointsWalker.Server.Models;
 using NetworkPointsWalker.Server.Services;
 using NetworkPointsWalker.Server.Services.Interfaces;
 
+var  myCORSPolicy = "_corsPolicy";
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: myCORSPolicy,
+                      policy  =>
+                      {
+                          policy.WithOrigins("http://client.graph.dyze.lu",
+                                              "https://client.graph.dyze.lu",
+                                              "http://localhost",
+                                              "https://localhost")
+                                                  .AllowAnyHeader()
+                                                  .AllowAnyMethod();
+                      });
+});
 // Add services to the container
 builder.Services.AddControllers();
 builder.Services.AddDbContext<AppDbContext>(
@@ -51,7 +66,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors(myCORSPolicy);
 app.MapFallbackToFile("/index.html");
 
 app.Run();
