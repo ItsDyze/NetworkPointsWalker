@@ -1,21 +1,17 @@
-# Use the official .NET Core SDK as a parent image
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /app
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+WORKDIR /App
 
-# Copy the project file and restore any dependencies (use .csproj for the project name)
-COPY *.csproj ./
+# Copy everything
+COPY . ./
+# Restore as distinct layers
 RUN dotnet restore
-
-# Copy the rest of the application code
-COPY . .
-
-# Publish the application
+# Build and publish a release
 RUN dotnet publish -c Release -o out
 
-# Build the runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
-WORKDIR /app
-COPY --from=build /app/out ./
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /App
+COPY --from=build-env /App/out .
 
 # Expose the port your application will run on
 EXPOSE 80
