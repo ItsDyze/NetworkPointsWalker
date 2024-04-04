@@ -1,6 +1,6 @@
 {
   "/api": {
-    "target": "https://networkpointswalkerserver.azurewebsites.net/",
+    "target": "https://api.graph.dyze.lu/",
     "secure": false,
     "pathRewrite": {
       "^/api": ""
