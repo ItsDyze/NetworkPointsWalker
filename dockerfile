@@ -14,7 +14,7 @@ WORKDIR /App
 COPY --from=build-env /App/out .
 
 # Expose the port your application will run on
-EXPOSE 80
+EXPOSE 8080
 
 # Start the application
 ENTRYPOINT ["dotnet", "NetworkPointsWalker.Server.dll"]
