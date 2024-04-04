@@ -11,4 +11,4 @@ RUN npm run build --prod
 
 EXPOSE 4200
 
-CMD ["ng", "serve"]
+CMD ["npm", "start"]
