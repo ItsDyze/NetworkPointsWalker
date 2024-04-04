@@ -3,13 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "run-script-os",
+    "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "prestart": "node aspnetcore-https",
-    "start:windows": "ng serve",
-    "start:default": "ng serve"
+    "test": "ng test"
   },
   "private": true,
   "dependencies": {
