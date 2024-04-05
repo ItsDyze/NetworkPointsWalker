@@ -10,7 +10,7 @@ RUN npm ci
 COPY . .
 RUN ng build --configuration production
 RUN echo "Hi "
-RUN echo $(ls /usr/src/app)
+RUN echo $(ls /usr/src/app/dist)
 
 FROM nginx:latest
 
