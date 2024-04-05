@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
                       {
                           policy.WithOrigins("http://client.graph.dyze.lu",
                                               "https://client.graph.dyze.lu",
-                                              "http://localhost",
+                                              "http://localhost:4200",
                                               "https://localhost")
                                                   .AllowAnyHeader()
                                                   .AllowAnyMethod();
