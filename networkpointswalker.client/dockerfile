@@ -9,13 +9,12 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN ng build --configuration production
-RUN echo $(ls /usr/src/app/dist/networkpointswalker.client)
 
 FROM nginx:latest
 
 EXPOSE 4200
 
 RUN mkdir /app
-COPY --from=build /usr/src/app/dist/networkpointswalker.client/ /app
+COPY --from=build /usr/src/app/dist/networkpointswalker.client/browser /app
 COPY nginx.conf /etc/nginx/nginx.conf
 USER nginx
