@@ -61,6 +61,10 @@
                                 {
                                     "replace": "src/environments/environment.ts",
                                     "with": "src/environments/environment.development.ts"
+                                },
+                                {
+                                    "replace": "src/environments/proxy.conf.json",
+                                    "with": "src/environments/proxy.conf.development.json"
                                 }
                             ],
                             "optimization": false,
@@ -79,7 +83,7 @@
                         },
                         "development": {
                             "buildTarget": "networkpointswalker.client:build:development",
-                            "proxyConfig": "src/environments/proxy.conf.development.json"
+                            "proxyConfig": "src/environments/proxy.conf.json"
                         }
                     },
                     "defaultConfiguration": "development"
