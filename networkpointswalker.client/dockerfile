@@ -3,11 +3,12 @@ FROM node:latest as build
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
+RUN npm i -g @angular/cli
 COPY package*.json ./
 
 RUN npm ci
 COPY . .
-RUN npm run build --prod
+RUN ng build --configuration production
 
 EXPOSE 4200
 
