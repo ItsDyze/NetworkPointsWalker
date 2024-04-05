@@ -9,6 +9,8 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN ng build --configuration production
+RUN echo "Hi "
+RUN echo $(ls /usr/src/app)
 
 FROM nginx:latest
 
