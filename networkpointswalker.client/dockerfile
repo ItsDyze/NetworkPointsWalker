@@ -14,4 +14,4 @@ EXPOSE 4200
 
 FROM nginx:latest
 
-COPY --from=build /usr/src/app/dist/browser/ /usr/share/nginx/html
+COPY --from=build ./dist/browser/ /usr/share/nginx/html
